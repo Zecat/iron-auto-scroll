@@ -31,6 +31,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         type: Boolean,
         value: false
       },
+      slientScrollForInitialSelection: {
+        type: Boolean,
+        value: false
+      },
       selected: {
         observer: '_selectedChanged'
       },
@@ -40,8 +44,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // if it's the initial selection
       if (oldValue == undefined) {
         if (!this.noScrollForInitialSelection) {
-          // scroll without animation
-          this.scroll(0, this.items[newValue].offsetTop);
+          this.slientScrollForInitialSelection ? this.scroll(0, this.items[newValue].offsetTop) :
+          this.smoothScroll(this.items[newValue].offsetTop, this.scrollDuration);
         }
       } else if (!this._autoScrollDisabled) {
         // TODO: use CSS scroll-behavior once supported.
