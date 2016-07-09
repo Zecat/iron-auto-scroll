@@ -9,8 +9,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../iron-scroll-target-behavior/iron-scroll-target-behavior.html">
 <link rel="import" href="../iron-selector/iron-selectable.html">
+<link rel="import" href="iron-smooth-scroll-behavior.html">
 
 <!--
 
@@ -26,10 +26,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       autoScrollDisabled: {
         type: Boolean,
         value: false
-      },
-      scrollDuration: {
-        type: Number,
-        value: 300
       },
       noScrollForInitialSelection: {
         type: Boolean,
@@ -49,42 +45,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       } else if (!this._autoScrollDisabled) {
         // TODO: use CSS scroll-behavior once supported.
-        this._smoothScroll(this.items[newValue].offsetTop, this.scrollDuration);
+        this.smoothScroll(this.items[newValue].offsetTop, this.scrollDuration);
       }
-    },
-    /**
-     * Perform a easing scroll animation in the scroll target during which scroll spy is disabled.
-     * @param  {Number} top      Top position to scroll to.
-     * @param  {Number} duration Scroll duration (ms)
-     */
-    _smoothScroll: function(top, duration) {
-      var easingFn = function easeOutQuad(t, b, c, d) {
-        t /= d;
-        return -c * t*(t-2) + b;
-      };
-      var startTime = Date.now();
-      var currentScrollTop = this._scrollTop;
-      var deltaScrollTop = top - currentScrollTop;
-      var oldSpyDisabled = this.spyDisabled;
-      this.spyDisabled = true;
-      (function updateFrame() {
-        var now = Date.now();
-        var elapsedTime = now - startTime;
-        if (elapsedTime > duration) {
-          this.scroll(0, top);
-          this.spyDisabled = oldSpyDisabled;
-        } else {
-          this.scroll(0, Math.round(easingFn(elapsedTime, currentScrollTop, deltaScrollTop, duration)));
-          requestAnimationFrame(updateFrame.bind(this));
-        }
-      }).call(this);
     }
   }
 
   /** @polymerBehavior */
   Polymer.IronAutoScrollBehavior = [
     Polymer.IronSelectableBehavior,
-    Polymer.IronScrollTargetBehavior,
+    Polymer.IronSmoothScrollBehavior,
     Polymer.IronAutoScrollBehaviorImpl
   ];
 
