@@ -24,6 +24,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       scrollDuration: {
         type: Number,
         value: 300
+      },
+      scrolling: {
+        type: Boolean,
+        value: false,
+        notify: true,
+        readOnly: true
       }
     },
      /**
@@ -39,14 +45,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var startTime = Date.now();
       var currentScrollTop = this._scrollTop;
       var deltaScrollTop = top - currentScrollTop;
-      var oldSpyDisabled = this.spyDisabled;
-      this.spyDisabled = true;
+      this._setScrolling(true);
       (function updateFrame() {
         var now = Date.now();
         var elapsedTime = now - startTime;
         if (elapsedTime > duration) {
           this.scroll(0, top);
-          this.spyDisabled = oldSpyDisabled;
+          this._setScrolling(false);
         } else {
           this.scroll(0, Math.round(easingFn(elapsedTime, currentScrollTop, deltaScrollTop, duration)));
           requestAnimationFrame(updateFrame.bind(this));
