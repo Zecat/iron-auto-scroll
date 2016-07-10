@@ -47,7 +47,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.slientScrollForInitialSelection ? this.scroll(0, this.items[newValue].offsetTop) :
           this.smoothScroll(this.items[newValue].offsetTop, this.scrollDuration);
         }
-      } else if (!this._autoScrollDisabled) {
+      } else if (!this.autoScrollDisabled) {
         // TODO: use CSS scroll-behavior once supported.
         this.smoothScroll(this.items[newValue].offsetTop, this.scrollDuration);
       }
