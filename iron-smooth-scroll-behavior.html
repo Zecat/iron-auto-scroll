@@ -21,10 +21,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   /** @polymerBehavior Polymer.IronSmoothScrollBehavior */
   Polymer.IronSmoothScrollBehaviorImpl = {
     properties: {
+      /**
+       * The scroll duration (ms) when selected change.
+       */
       scrollDuration: {
         type: Number,
         value: 300
       },
+      /**
+       * True when currently scrolling.
+       */
       scrolling: {
         type: Boolean,
         value: false,

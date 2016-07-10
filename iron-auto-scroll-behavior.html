@@ -23,14 +23,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   Polymer.IronAutoScrollBehaviorImpl = {
 
     properties: {
+      /**
+       * When true, the scroll target will not scroll automatically to the selected item.
+       */
       autoScrollDisabled: {
         type: Boolean,
         value: false
       },
+      /**
+       * When true, the scroll feature is disabled for initial selection.
+       */
       noScrollForInitialSelection: {
         type: Boolean,
         value: false
       },
+      /**
+       * When true, the scroll will occure without smooth animation for initial selection.
+       */
       slientScrollForInitialSelection: {
         type: Boolean,
         value: false
