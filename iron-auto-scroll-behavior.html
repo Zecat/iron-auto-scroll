@@ -38,9 +38,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         value: false
       },
       /**
-       * When true, the scroll will occure without smooth animation for initial selection.
+       * When true, the scroll will occure with smooth animation for initial selection. Note: If this attribute is false, `scrolling` will note become true during the initial scroll to fake the scroll-target was already in this position when the selection start.
        */
-      slientScrollForInitialSelection: {
+      smoothScrollForInitialSelection: {
         type: Boolean,
         value: false
       },
@@ -53,8 +53,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // if it's the initial selection
       if (oldValue == undefined) {
         if (!this.noScrollForInitialSelection) {
-          this.slientScrollForInitialSelection ? this.scroll(0, this.items[newValue].offsetTop) :
-          this.smoothScroll(this.items[newValue].offsetTop, this.scrollDuration);
+          this.smoothScrollForInitialSelection ? this.smoothScroll(this.items[newValue].offsetTop, this.scrollDuration) :
+          this.scroll(0, this.items[newValue].offsetTop);
         }
       } else if (!this.autoScrollDisabled) {
         // TODO: use CSS scroll-behavior once supported.
