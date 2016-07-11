@@ -1,0 +1,87 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-scroll-target-behavior/iron-scroll-target-behavior.html">
+
+<!--
+
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<script>
+  /** @polymerBehavior Polymer.IronSmoothScrollBehavior */
+  Polymer.IronSmoothScrollBehaviorImpl = {
+    properties: {
+      /**
+       * The scroll duration (ms) when selected change.
+       */
+      scrollDuration: {
+        type: Number,
+        value: 300
+      },
+      /**
+       * True when currently scrolling.
+       */
+      scrolling: {
+        type: Boolean,
+        value: false,
+        notify: true,
+        readOnly: true
+      }
+    },
+     /**
+     * Perform a easing scroll animation in the scroll target during which scroll spy is disabled.
+     * @param  {Number} top      Top position to scroll to.
+     * @param  {Number} duration Scroll duration (ms)
+     */
+    smoothScroll: function(top, duration) {
+      var easingFn = function easeOutQuad(t, b, c, d) {
+        t /= d;
+        return -c * t*(t-2) + b;
+      };
+      var startTime = Date.now();
+      var currentScrollTop = this._scrollTop;
+      var deltaScrollTop = top - currentScrollTop;
+      this._setScrolling(true);
+      (function updateFrame() {
+        var now = Date.now();
+        var elapsedTime = now - startTime;
+        if (elapsedTime > duration) {
+          this.scroll(0, top);
+          this._setScrolling(false);
+        } else {
+          this.scroll(0, Math.round(easingFn(elapsedTime, currentScrollTop, deltaScrollTop, duration)));
+          requestAnimationFrame(updateFrame.bind(this));
+        }
+      }).call(this);
+    },
+    scrollToTop: function() {
+      this.smoothScroll(0, this.scrollDuration);
+    },
+    scrollToBottom: function() {
+      this.smoothScroll(this.scrollTarget.scrollHeight, this.scrollDuration);
+    },
+    scrollDown: function(shift) {
+      this.smoothScroll(this._scrollTop + shift, this.scrollDuration);
+    },
+    scrollUp: function(shift) {
+      this.smoothScroll(this._scrollTop - shift, this.scrollDuration);
+    }
+  }
+
+  /** @polymerBehavior */
+  Polymer.IronSmoothScrollBehavior = [
+    Polymer.IronScrollTargetBehavior,
+    Polymer.IronSmoothScrollBehaviorImpl
+  ];
+
+</script>
