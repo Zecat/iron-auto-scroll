@@ -44,6 +44,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      * @param  {Number} duration Scroll duration (ms)
      */
     smoothScroll: function(top, duration) {
+      if (top == this._scrollTop) {
+        return;
+      }
       var easingFn = function easeOutQuad(t, b, c, d) {
         t /= d;
         return -c * t*(t-2) + b;
