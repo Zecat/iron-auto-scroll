@@ -71,6 +71,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (this.autoScrollDisabled) {
         return;
       }
+      
+      // Convert key to index when needed
+      newValue = this._valueToIndex(newValue);
+
       // if it's the initial selection
       if (oldValue == undefined) {
         if (!this.noScrollForInitialSelection) {
