@@ -53,9 +53,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         notify: true,
         readOnly: true
       },
-      selected: {
-        observer: '_selectedChanged'
-      },
       /**
        * When true, the scroll will occure with smooth animation for initial selection. Note: If this attribute is false
        * `scrolling` will note become true during the initial scroll to fake the scroll-target was already in this position
@@ -67,28 +64,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
     },
 
-    _selectedChanged: function(newValue, oldValue) {
-      if (this.autoScrollDisabled) {
-        return;
-      }
-      
-      // Convert key to index when needed
-      newValue = this._valueToIndex(newValue);
-
-      // only scroll if the target value exists in 'items'
-      if (newValue in this.items) {
-        // if it's the initial selection
-        if (oldValue == undefined) {
-          if (!this.noScrollForInitialSelection) {
-            this.smoothScrollForInitialSelection ? this.smoothScroll(this.items[newValue].offsetTop, this.scrollDuration) :
-            this.scroll(0, this.items[newValue].offsetTop);
-          }
-        } else {
-          // TODO: use CSS scroll-behavior once supported.
-          this.smoothScroll(this.items[newValue].offsetTop, this.scrollDuration);
-        }
-      }  
+    listeners: {
+      'iron-select': '_initialSelectHandler'
     },
+
+    detached: function() {
+      this.unlisten(this, 'iron-select', '_selectHandler');
+    },
+
+    _initialSelectHandler: function(event, object) {
+      if (!this.autoScrollDisabled && !this.noScrollForInitialSelection) {
+        this.smoothScrollForInitialSelection ?
+          this.smoothScroll(object.item.offsetTop, this.scrollDuration) :
+          this.scroll(0, object.item.offsetTop);
+      }
+      this.unlisten(this, 'iron-select', '_initialSelectHandler');
+      this.listen(this, 'iron-select', '_selectHandler');
+    },
+
+    _selectHandler: function(event, object) {
+      !this.autoScrollDisabled && this.smoothScroll(object.item.offsetTop, this.scrollDuration);
+    },
+
     /**
      * Perform a easing scroll animation in the scroll target during which scroll spy is disabled.
      * @param  {Number} top      Top position to scroll to.
