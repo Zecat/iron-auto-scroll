@@ -75,16 +75,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // Convert key to index when needed
       newValue = this._valueToIndex(newValue);
 
-      // if it's the initial selection
-      if (oldValue == undefined) {
-        if (!this.noScrollForInitialSelection) {
-          this.smoothScrollForInitialSelection ? this.smoothScroll(this.items[newValue].offsetTop, this.scrollDuration) :
-          this.scroll(0, this.items[newValue].offsetTop);
+      // only scroll if the target value exists in 'items'
+      if (newValue in this.items) {
+        // if it's the initial selection
+        if (oldValue == undefined) {
+          if (!this.noScrollForInitialSelection) {
+            this.smoothScrollForInitialSelection ? this.smoothScroll(this.items[newValue].offsetTop, this.scrollDuration) :
+            this.scroll(0, this.items[newValue].offsetTop);
+          }
+        } else {
+          // TODO: use CSS scroll-behavior once supported.
+          this.smoothScroll(this.items[newValue].offsetTop, this.scrollDuration);
         }
-      } else {
-        // TODO: use CSS scroll-behavior once supported.
-        this.smoothScroll(this.items[newValue].offsetTop, this.scrollDuration);
-      }
+      }  
     },
     /**
      * Perform a easing scroll animation in the scroll target during which scroll spy is disabled.
