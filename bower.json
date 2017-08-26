@@ -20,8 +20,7 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
     "iron-scroll-target-behavior": "PolymerElements/iron-scroll-target-behavior#2.0.0",
-    "iron-selector": "PolymerElements/iron-selector#2.0.0",
-    "paper-listbox": "PolymerElements/paper-listbox#^2.0.0"
+    "iron-selector": "PolymerElements/iron-selector#2.0.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^3.0.0",
