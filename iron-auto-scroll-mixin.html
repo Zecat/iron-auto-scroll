@@ -1,0 +1,128 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-selector/iron-selectable.html">
+<link rel="import" href="../iron-scroll-target-behavior/iron-scroll-target-behavior.html">
+
+<script>
+
+  if (!window.Zecat) {
+    window.Zecat = {};
+  }
+
+  /**
+   * 
+   * 
+   * @polymer
+   * @mixinFunction
+   * @appliesMixin Polymer.IronSelectableBehavior
+   * @appliesMixin Polymer.IronScrollTargetBehavior
+   */
+  Zecat.IronAutoScrollMixin = (superClass) =>
+    class extends Polymer.mixinBehaviors(
+      [Polymer.IronSelectableBehavior, Polymer.IronScrollTargetBehavior],
+      superClass
+    ) {
+
+    static get properties() {
+      return {
+        /**
+         * When true, the scroll target will not scroll automatically to the selected item.
+         */
+        autoScrollDisabled: {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * When true, the scroll feature is disabled for initial selection.
+         */
+        noScrollForInitialSelection: {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * The scroll duration (ms) when selected change.
+         */
+        scrollDuration: {
+          type: Number,
+          value: 300
+        },
+        /**
+         * Become true during auto-scroll.
+         */
+        autoScrolling: {
+          type: Boolean,
+          value: false,
+          notify: true,
+          readOnly: true
+        },
+        /**
+         * When true, the scroll will occure with smooth animation for initial selection. Note: If this attribute is false
+         * `scrolling` will note become true during the initial scroll to fake the scroll-target was already in this position
+         * when the selection start.
+         */
+        smoothScrollForInitialSelection: {
+          type: Boolean,
+          value: false
+        }
+      };
+    }
+ 
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      super.connectedCallback();
+      this.addEventListener('iron-select', this._initialSelectHandler.bind(this));
+    }
+
+    disconnectedCallback() {
+      super.disconnectedCallback();
+      this.removeEventListener('iron-select', this._selectHandler.bind(this));
+    }
+
+    _initialSelectHandler({detail: {item}}) {
+      if (!this.autoScrollDisabled && !this.noScrollForInitialSelection) {
+        this.smoothScrollForInitialSelection ?
+          this.smoothScroll(item.offsetTop, this.scrollDuration) :
+          this.scroll(0, item.offsetTop);
+      }
+      this.removeEventListener('iron-select', this._initialSelectHandler.bind(this));
+      this.addEventListener('iron-select', this._selectHandler.bind(this));
+    }
+
+    _selectHandler({detail: {item}}) {
+      !this.autoScrollDisabled && this.smoothScroll(item.offsetTop, this.scrollDuration);
+    }
+
+    /**
+     * Performs a easing scroll animation in the scroll target during which scroll spy is disabled.
+     * @param  {Number} top      Top position to scroll to.
+     * @param  {Number} duration Scroll duration (ms)
+     */
+    smoothScroll(top, duration) {
+      if (top == this._scrollTop) {
+        return;
+      }
+      var easingFn = function easeOutQuad(t, b, c, d) {
+        t /= d;
+        return -c * t*(t-2) + b;
+      };
+      var startTime = Date.now();
+      var currentScrollTop = this._scrollTop;
+      var deltaScrollTop = top - currentScrollTop;
+      this._setAutoScrolling(true);
+      (function updateFrame() {
+        var now = Date.now();
+        var elapsedTime = now - startTime;
+        if (elapsedTime > duration) {
+          this.scroll(0, top);
+          this._setAutoScrolling(false);
+        } else {
+          this.scroll(0, Math.round(easingFn(elapsedTime, currentScrollTop, deltaScrollTop, duration)));
+          requestAnimationFrame(updateFrame.bind(this));
+        }
+      }).call(this);
+    }
+  }
+
+</script>
