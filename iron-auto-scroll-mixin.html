@@ -70,11 +70,15 @@
       super();
       this._initialSelectHandlerBoundListener = this._initialSelectHandler.bind(this);
       this._selectHandlerBoundListener = this._selectHandler.bind(this);
+      this.scrollTimingFunction = (t, b, c, d) => {
+        t /= d;
+        return -c * t*(t-2) + b;
+      };
+      this.addEventListener('iron-select', this._initialSelectHandlerBoundListener);
     }
 
     connectedCallback() {
       super.connectedCallback();
-      this.addEventListener('iron-select', this._initialSelectHandlerBoundListener);
     }
 
     disconnectedCallback() {
@@ -105,10 +109,6 @@
       if (top == this._scrollTop) {
         return;
       }
-      var easingFn = function easeOutQuad(t, b, c, d) {
-        t /= d;
-        return -c * t*(t-2) + b;
-      };
       var startTime = Date.now();
       var currentScrollTop = this._scrollTop;
       var deltaScrollTop = top - currentScrollTop;
@@ -120,7 +120,7 @@
           this.scroll(0, top);
           this._setAutoScrolling(false);
         } else {
-          this.scroll(0, Math.round(easingFn(elapsedTime, currentScrollTop, deltaScrollTop, duration)));
+          this._scrollTop = this.scrollTimingFunction(elapsedTime, currentScrollTop, deltaScrollTop, duration);
           requestAnimationFrame(updateFrame.bind(this));
         }
       }).call(this);
