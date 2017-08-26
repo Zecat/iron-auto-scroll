@@ -68,16 +68,18 @@
  
     constructor() {
       super();
+      this._initialSelectHandlerBoundListener = this._initialSelectHandler.bind(this);
+      this._selectHandlerBoundListener = this._selectHandler.bind(this);
     }
 
     connectedCallback() {
       super.connectedCallback();
-      this.addEventListener('iron-select', this._initialSelectHandler.bind(this));
+      this.addEventListener('iron-select', this._initialSelectHandlerBoundListener);
     }
 
     disconnectedCallback() {
       super.disconnectedCallback();
-      this.removeEventListener('iron-select', this._selectHandler.bind(this));
+      this.removeEventListener('iron-select', this._selectHandlerBoundListener);
     }
 
     _initialSelectHandler({detail: {item}}) {
@@ -86,8 +88,8 @@
           this.smoothScroll(item.offsetTop, this.scrollDuration) :
           this.scroll(0, item.offsetTop);
       }
-      this.removeEventListener('iron-select', this._initialSelectHandler.bind(this));
-      this.addEventListener('iron-select', this._selectHandler.bind(this));
+      this.removeEventListener('iron-select', this._initialSelectHandlerBoundListener);
+      this.addEventListener('iron-select', this._selectHandlerBoundListener);
     }
 
     _selectHandler({detail: {item}}) {
