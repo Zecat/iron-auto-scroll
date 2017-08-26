@@ -1,86 +1,113 @@
 <!doctype html>
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
+
 <html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
     <title>iron-auto-scroll Demo</title>
-    <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
-    <link rel="import" href="../iron-auto-scroll.html">
-    <link rel="import" href="../../paper-tabs/paper-tabs.html">
-    <link rel="import" href="../../paper-tabs/paper-tab.html">
-    <link rel="import" href="../../paper-header-panel/paper-header-panel.html">
-    <link rel="import" href="../../paper-toolbar/paper-toolbar.html">
-    <link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../app-layout/app-drawer/app-drawer.html">
+    <link rel="import" href="../../app-layout/app-drawer-layout/app-drawer-layout.html">
+    <link rel="import" href="../../iron-icons/iron-icons.html">
+    <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
+    <link rel="import" href="../../paper-listbox/paper-listbox.html">
+    <link rel="import" href="../../paper-item/paper-item.html">
+    <link rel="import" href="../../shadycss/apply-shim.html">
+    <link rel="import" href="../../paper-styles/shadow.html">
+    <link rel="import" href="../../paper-styles/typography.html">
     <link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+    <link rel="import" href="../iron-auto-scroll.html">
   </head>
-    <style is="custom-style" include="iron-flex">
+
+  <custom-style>
+    <style>
       body {
         margin: 0;
-        height: 100vh;
+        min-height: 100vh;
+        @apply --paper-font-common-base;
       }
-      iron-auto-scroll div {
-        padding: 250px;
-        border-bottom: 1px solid grey;
+      app-drawer {
+        @apply --shadow-elevation-12dp;
+        --app-drawer-content-container: {
+          overflow: auto;
+          color: white;
+          background: var(--primary-color);   
+          --primary-background-color: inherit;
+          --primary-text-color:  inherit;
+        };
       }
-      paper-toggle-button {
-        --paper-toggle-button-label-color: #fafafa;
-        --paper-toggle-button-checked-bar-color:  var(--paper-pink-500);
-        --paper-toggle-button-checked-button-color:  var(--paper-pink-500);
-        --paper-toggle-button-checked-ink-color: var(--paper-pink-500);
+      #drawerHeader {
+        padding: 24px;
+        @apply --paper-font-title;
+        background: var(--paper-blue-900);
       }
-  </style>
+      iron-auto-scroll > div {
+        padding: 42px;
+        @apply --shadow-elevation-2dp;
+        margin: 42px 24px 150px 24px;
+      }
+      paper-item {
+        cursor: pointer;
+      }
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+      [drawer-toggle] {
+        position: fixed;
+        top:  24px;
+        left: 24px;
+        background: white;
+        border-radius: 50%;
+        @apply --shadow-elevation-2dp;
+      }
+    </style>
+  </custom-style>
+
   <body unresolved>
 
-    <template is="dom-bind" id="scope">
-      <paper-header-panel class="flex" id="headerPanel">
-        <paper-toolbar>
-          <paper-tabs selected="{{scrollSelected}}">
-            <paper-tab>Section A</paper-tab>
-            <paper-tab>Section B</paper-tab>
-            <paper-tab>Section C</paper-tab>
-            <paper-tab>Section D</paper-tab>
-          </paper-tabs>
-          <div class="flex"></div>
-          <paper-toggle-button checked="{{autoScrollDisabled}}">auto-scroll-disabled</paper-toggle-button>
-        </paper-toolbar>
-        <iron-auto-scroll
-          no-scroll-for-initial-selection
-          selected="{{scrollSelected}}"
-          fallback-selection="2"
-          auto-scroll-disabled="{{autoScrollDisabled}}"
-          id="scrollSpy">
-          <div>
-            <h1>Section A</h1>
-            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis, provident asperiores. Itaque quas architecto commodi, quam dicta beatae blanditiis obcaecati, voluptatibus, quisquam sint necessitatibus aliquid vero sunt dolor iusto quos!</span>
-          </div>
-          <div>
-            <h1>Section B</h1>
-            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis, provident asperiores. Itaque quas architecto commodi, quam dicta beatae blanditiis obcaecati, voluptatibus, quisquam sint necessitatibus aliquid vero sunt dolor iusto quos!</span>
-          </div>
-          <div>
-            <h1>Section C</h1>
-            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis, provident asperiores. Itaque quas architecto commodi, quam dicta beatae blanditiis obcaecati, voluptatibus, quisquam sint necessitatibus aliquid vero sunt dolor iusto quos!</span>
-          </div>
-          <div>
-            <h1>Section D</h1>
-            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis, provident asperiores. Itaque quas architecto commodi, quam dicta beatae blanditiis obcaecati, voluptatibus, quisquam sint necessitatibus aliquid vero sunt dolor iusto quos!</span>
-          </div>
-        </iron-auto-scroll>
-      </paper-header-panel>
-      <script>
-        var scope = document.getElementById("scope");
-        scope.$.scrollSpy.scrollTarget = scope.$.headerPanel.scroller;
-      </script>
-    </template>
+    <dom-bind id="scope">
+      <template>
+
+      <app-drawer-layout>
+
+          <app-drawer slot="drawer">
+            <div id="drawerHeader">Scroll to...</div>
+            <paper-listbox selected="{{scrollSelected}}">
+              <template is="dom-repeat" items="[[sections]]">
+                <paper-item>Section [[item]]</paper-item>
+              </template>
+            </paper-listbox>
+          </app-drawer>
+
+          <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+
+          <iron-auto-scroll
+              no-scroll-for-initial-selection
+              selected="[[scrollSelected]]"
+              fallback-selection="4"
+              id="scrollSpy">
+
+            <template is="dom-repeat" items="[[sections]]">
+              <div>
+                <h1>Section [[item]]</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis, provident asperiores. Itaque quas architecto commodi, quam dicta beatae blanditiis obcaecati, voluptatibus, quisquam sint necessitatibus aliquid vero sunt dolor iusto quos!</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis, provident asperiores. Itaque quas architecto commodi, quam dicta beatae blanditiis obcaecati, voluptatibus, quisquam sint necessitatibus aliquid vero sunt dolor iusto quos!</p>
+              </div>
+            </template>
+
+          </iron-auto-scroll>
+        </app-drawer-layout>
+
+      </template>
+    </dom-bind>
+    
+    <script>
+      window.addEventListener('WebComponentsReady', () => {
+        const scope = document.getElementById("scope");
+        scope.sections = [...Array(10)].map((_, i) => String.fromCharCode(65 + i));
+      })
+    </script>
 
   </body>
 </html>
